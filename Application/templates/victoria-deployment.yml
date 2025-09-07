@@ -1,0 +1,57 @@
+# PersistentVolume for VictoriaMetrics
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: victoria-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+# VictoriaMetrics configuration Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: victoria-deployment
+spec:
+  replicas: {{ .Values.victoria.replicaCount }}
+  selector:
+    matchLabels:
+      app: victoria
+  template:
+    metadata:
+      labels:
+        app: victoria
+    spec:
+      containers:
+        - name: victoria-container
+          image: {{ .Values.victoria.image.repository }}:{{ .Values.victoria.image.tag }}
+          ports:
+            - containerPort: {{ .Values.victoria.containerPort }}
+          args:
+            - -retentionPeriod=1d
+            - -storageDataPath=/victoria-metrics-data
+          volumeMounts:
+            - name: victoria-storage
+              mountPath: /victoria-metrics-data
+      volumes:
+        - name: victoria-storage
+          persistentVolumeClaim:
+            claimName: victoria-pvc
+---
+# VictoriaMetrics configuration Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: victoria-service
+spec:
+  selector:
+    app: victoria
+  ports:
+    - protocol: TCP
+      port: {{ .Values.victoria.clusterPort }}
+      targetPort: {{ .Values.victoria.containerPort }}
+      nodePort: {{ .Values.victoria.nodePort }}
+  type: NodePort

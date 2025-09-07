@@ -1,0 +1,6 @@
+apiVersion : v2
+name       : Chart-Spam
+description: A Helm chart for Spam
+type       : application
+version    : 0.1.0
+appVersion : "1.16.0"

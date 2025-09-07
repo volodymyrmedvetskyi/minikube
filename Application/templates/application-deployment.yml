@@ -1,0 +1,34 @@
+# Application configuration Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: application-deployment
+spec:
+  replicas: {{ .Values.application.replicaCount }}
+  selector:
+    matchLabels:
+      app: application
+  template:
+    metadata:
+      labels:
+        app: application
+    spec:
+      containers:
+        - name: application-container
+          image: {{ .Values.application.image.repository }}:{{ .Values.application.image.tag }}
+          ports:
+            - containerPort: {{ .Values.application.containerPort }}
+---
+# Application configuration Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: application-service
+spec:
+  selector:
+    app: application
+  ports:
+    - protocol: TCP
+      port: {{ .Values.application.clusterPort }}
+      targetPort: {{ .Values.application.containerPort }}
+  type: ClusterIP

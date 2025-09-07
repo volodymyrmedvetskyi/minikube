@@ -1,0 +1,69 @@
+# ServiceAccount for kube-state-metrics
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ksm-sa
+  namespace: default
+---
+# ClusterRole for kube-state-metrics
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ksm-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods","nodes","namespaces","services","persistentvolumeclaims","persistentvolumes"]
+    verbs: ["get","list","watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments","statefulsets","daemonsets"]
+    verbs: ["get","list","watch"]
+---
+# ClusterRoleBinding for kube-state-metrics
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ksm-rb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ksm-role
+subjects:
+  - kind: ServiceAccount
+    name: ksm-sa
+    namespace: default
+---
+# kube-state-metrics configuration Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ksm-deployment
+spec:
+  replicas: {{ .Values.ksm.replicaCount }}
+  selector:
+    matchLabels:
+      app: ksm
+  template:
+    metadata:
+      labels:
+        app: ksm
+    spec:
+      serviceAccountName: ksm-sa
+      containers:
+        - name: ksm-container
+          image: {{ .Values.ksm.image.repository }}:{{ .Values.ksm.image.tag }}
+          ports:
+            - containerPort: {{ .Values.ksm.containerPort }}
+---
+# kube-state-metrics configuration Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: ksm-service
+spec:
+  selector:
+    app: ksm
+  ports:
+    - protocol: TCP
+      port: {{ .Values.ksm.clusterPort }}
+      targetPort: {{ .Values.ksm.containerPort }}
+  type: ClusterIP
