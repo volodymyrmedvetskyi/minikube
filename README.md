@@ -1,5 +1,6 @@
 # Налаштування GitOps-інфраструктури
-![img.png](img.png)
+<img width="1449" height="617" alt="image" src="https://github.com/user-attachments/assets/a233cfd7-53fe-4797-93bd-0191617d7433" />
+
 Налаштовано та розгорнуто GitOps-інфраструктуру з наступним стеком:
 * minikube
 * VictoriaMetrics
