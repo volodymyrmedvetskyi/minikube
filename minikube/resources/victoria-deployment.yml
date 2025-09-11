@@ -16,7 +16,7 @@ kind: Deployment
 metadata:
   name: victoria-deployment
 spec:
-  replicas: {{ .Values.victoria.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: victoria
@@ -27,9 +27,9 @@ spec:
     spec:
       containers:
         - name: victoria-container
-          image: {{ .Values.victoria.image.repository }}:{{ .Values.victoria.image.tag }}
+          image: victoriametrics/victoria-metrics:latest
           ports:
-            - containerPort: {{ .Values.victoria.containerPort }}
+            - containerPort: 8428
           args:
             - -retentionPeriod=1d
             - -storageDataPath=/victoria-metrics-data
@@ -51,7 +51,7 @@ spec:
     app: victoria
   ports:
     - protocol: TCP
-      port: {{ .Values.victoria.clusterPort }}
-      targetPort: {{ .Values.victoria.containerPort }}
-      nodePort: {{ .Values.victoria.nodePort }}
+      port: 8428
+      targetPort: 8428
+      nodePort: 30028
   type: NodePort

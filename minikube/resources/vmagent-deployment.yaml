@@ -35,7 +35,7 @@ kind: Deployment
 metadata:
   name: vmagent-deployment
 spec:
-  replicas: {{ .Values.vmagent.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: vmagent
@@ -47,9 +47,9 @@ spec:
       serviceAccountName: vmagent-sa
       containers:
         - name: vmagent-container
-          image: {{ .Values.vmagent.image.repository }}:{{ .Values.vmagent.image.tag }}
+          image: victoriametrics/vmagent:latest
           ports:
-            - containerPort: {{ .Values.vmagent.containerPort }}
+            - containerPort: 8429
           args:
             - -promscrape.config=/etc/vmagent/prometheus.yml
             - -remoteWrite.url=http://victoria-service:8428/api/v1/write
@@ -98,6 +98,6 @@ spec:
     app: vmagent
   ports:
     - protocol: TCP
-      port: {{ .Values.vmagent.clusterPort }}
-      targetPort: {{ .Values.vmagent.containerPort }}
+      port: 8429
+      targetPort: 8429
   type: ClusterIP

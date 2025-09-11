@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: grafana-deployment
 spec:
-  replicas: {{ .Values.grafana.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: grafana
@@ -15,9 +15,9 @@ spec:
     spec:
       containers:
         - name: grafana-container
-          image: {{ .Values.grafana.image.repository }}:{{ .Values.grafana.image.tag }}
+          image: grafana/grafana:latest
           ports:
-            - containerPort: {{ .Values.grafana.containerPort }}
+            - containerPort: 3000
           volumeMounts:
             - name: datasource-config
               mountPath: /etc/grafana/provisioning/datasources
@@ -166,7 +166,7 @@ spec:
     app: grafana
   ports:
     - protocol: TCP
-      port: {{ .Values.grafana.clusterPort }}
-      targetPort: {{ .Values.grafana.containerPort }}
-      nodePort: {{ .Values.grafana.nodePort }}
+      port: 3000
+      targetPort: 3000
+      nodePort: 30000
   type: NodePort

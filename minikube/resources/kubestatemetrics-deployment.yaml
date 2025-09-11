@@ -38,7 +38,7 @@ kind: Deployment
 metadata:
   name: ksm-deployment
 spec:
-  replicas: {{ .Values.ksm.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: ksm
@@ -50,9 +50,9 @@ spec:
       serviceAccountName: ksm-sa
       containers:
         - name: ksm-container
-          image: {{ .Values.ksm.image.repository }}:{{ .Values.ksm.image.tag }}
+          image: bitnami/kube-state-metrics:latest
           ports:
-            - containerPort: {{ .Values.ksm.containerPort }}
+            - containerPort: 8080
 ---
 # kube-state-metrics configuration Service
 apiVersion: v1
@@ -64,6 +64,6 @@ spec:
     app: ksm
   ports:
     - protocol: TCP
-      port: {{ .Values.ksm.clusterPort }}
-      targetPort: {{ .Values.ksm.containerPort }}
+      port: 8080
+      targetPort: 8080
   type: ClusterIP
