@@ -22,4 +22,4 @@
 ## Запуск кластера
 Після підняття minikube кластера інфраструктура розгортається однією командою:
 ```bash
-helm install <realease_name> .\Application\
+kubectl apply -f applications/application.yaml
