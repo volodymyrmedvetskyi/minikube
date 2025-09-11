@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: application-deployment
 spec:
-  replicas: {{ .Values.application.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: application
@@ -15,9 +15,9 @@ spec:
     spec:
       containers:
         - name: application-container
-          image: {{ .Values.application.image.repository }}:{{ .Values.application.image.tag }}
+          image: andriiuni/spam2000:1.1394.355
           ports:
-            - containerPort: {{ .Values.application.containerPort }}
+            - containerPort: 3000
 ---
 # Application configuration Service
 apiVersion: v1
@@ -29,6 +29,6 @@ spec:
     app: application
   ports:
     - protocol: TCP
-      port: {{ .Values.application.clusterPort }}
-      targetPort: {{ .Values.application.containerPort }}
+      port: 3000
+      targetPort: 3000
   type: ClusterIP
