@@ -13,7 +13,6 @@
 | minikube           | v1.36.0                       |
 | kubectl client     | v1.32.2                       |
 | kubectl server     | v1.33.1                       |
-| helm               | v3.18.6                              |
 | VictoriaMetrics    | victoriametrics/victoria-metrics:latest |
 | Grafana            | grafana/grafana:latest        |
 | vmagent            | victoriametrics/vmagent:latest        |
